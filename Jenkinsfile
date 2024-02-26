@@ -27,7 +27,7 @@ pipeline {
         stage('Build Docker OWN image') {
             steps {
                 dir ('.') {
-                    sh "/usr/bin/docker build -t pasqueque/pasqueque-repo:${BUILD_TAG} ."
+                    sh "docker build -t pasqueque/pasqueque-repo:${BUILD_TAG} ."
                 }
                 //sh 'whoami'
             }
@@ -38,11 +38,11 @@ pipeline {
             steps {  
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
-                    /usr/bin/docker login -u $USERNAME -p $PASSWORD
+                    docker login -u $USERNAME -p $PASSWORD
                     """
                 }
                
-               sh "/usr/bin/docker push pasqueque/pasqueque-repo:${BUILD_TAG}"
+               sh "docker push pasqueque/pasqueque-repo:${BUILD_TAG}"
             }
             
         }
