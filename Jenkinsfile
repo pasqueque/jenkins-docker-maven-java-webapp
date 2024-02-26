@@ -11,19 +11,22 @@ pipeline {
                 git branch: 'master', changelog: false, poll: false, url: env.GITHUB_URL
             }
         }
-        
+
         stage('Build by Maven Package') {
             agent {
                 docker {
                     image 'maven:3.9.0'
                     args '-v /root/.m2:/root/.m2'
                 }
-                steps {
-                    sh 'mvn clean package'
+                stages {
+                    stage('Build') {
+                        steps {
+                            sh 'mvn clean package'
+                        }
+                    }
                 }
             }
         }
-        
         stage('Build Docker OWN image') {
             steps {
                 dir ('.') {
