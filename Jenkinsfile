@@ -16,21 +16,18 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.9.0'
-                    args '-v /root/.m2:/root/.m2'
-                }
-                stages {
-                    stage('Build') {
-                        steps {
-                            sh 'mvn clean package'
-                        }
-                    }
+                    //args '-v /root/.m2:/root/.m2'
                 }
             }
+            steps {
+                sh 'mvn clean package'
+            }
         }
+        
         stage('Build Docker OWN image') {
             steps {
                 dir ('.') {
-                    sh "docker build -t pasqueque/pasqueque-repo:${BUILD_TAG} ."
+                    sh 'docker build -t pasqueque/pasqueque-repo:${BUILD_TAG} .'
                 }
                 //sh 'whoami'
             }
@@ -45,7 +42,7 @@ pipeline {
                     """
                 }
                
-               sh "docker push pasqueque/pasqueque-repo:${BUILD_TAG}"
+               sh 'docker push pasqueque/pasqueque-repo:${BUILD_TAG}'
             }
             
         }
