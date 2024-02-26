@@ -1,19 +1,19 @@
-pipeline {
-    
+pipeline { 
     agent {
-        label "linuxbuildnode"
+        label 'built-in'
     }
     
-    
+    environment {
+        GITHUB_URL = "https://github.com/pasqueque/jenkins-docker-maven-java-webapp.git"
+    }
+
     stages {
-        stage('SCM') {
+        stage('Check out') {
             steps {
-                git 'https://github.com/vimallinuxworld13/jenkins-docker-maven-java-webapp.git'
-                
+                git branch: 'master', changelog: false, poll: false, url: env.GITHUB_URL
             }
-            
         }
-        
+          
         stage('Build by Maven Package') {
             steps {
                 sh 'mvn clean package'
@@ -21,30 +21,29 @@ pipeline {
             
         }
         
-        
         stage('Build Docker OWN image') {
             steps {
-                sh "sudo docker build -t  vimal13/javaweb:${BUILD_TAG}  ."
+                sh "sudo docker build -t pasqueque/javaweb:${BUILD_TAG} ."
                 //sh 'whoami'
             }
             
         }
         
-        
         stage('Push Image to Docker HUB') {
-            steps {
-                
-                withCredentials([string(credentialsId: 'DOCKER_HUB_PWD', variable: 'DOCKER_HUB_PASS_CODE')]) {
-    // some block
-                 sh "sudo docker login -u vimal13 -p $DOCKER_HUB_PASS_CODE"
-}
+            steps {  
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login -u $USERNAME -p $PASSWORD
+                    """
+                }
                
-               sh "sudo docker push vimal13/javaweb:${BUILD_TAG}"
+               sh "sudo docker push pasqueque/javaweb:${BUILD_TAG}"
             }
             
         }
-        
-        
+    }
+}
+        /*
         stage('Deploy webAPP in DEV Env') {
             steps {
                 sh 'sudo docker rm -f myjavaapp'
@@ -146,7 +145,8 @@ pipeline {
              mail bcc: '', body: 'hi check this ..', cc: '', from: '', replyTo: '', subject: 'job ete fail', to: 'vdaga@lwindia.com'
          }
      }
-
+    
     
     
 }
+*/
