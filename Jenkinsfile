@@ -1,10 +1,5 @@
 pipeline { 
-    agent {
-        docker {
-            image 'maven:3.9.0'
-            args '-v /root/.m2:/root/.m2'
-        }
-    }
+    agent any
     
     environment {
         GITHUB_URL = "https://github.com/pasqueque/jenkins-docker-maven-java-webapp.git"
@@ -16,20 +11,22 @@ pipeline {
                 git branch: 'master', changelog: false, poll: false, url: env.GITHUB_URL
             }
         }
-          
+        
         stage('Build by Maven Package') {
-            steps {
-                sh 'mvn clean package'
+            agent {
+                docker {
+                    image 'maven:3.9.0'
+                    args '-v /root/.m2:/root/.m2'
+                }
+                steps {
+                    sh 'mvn clean package'
+                }
             }
-            
         }
         
         stage('Build Docker OWN image') {
             steps {
                 dir ('.') {
-                    sh "whoami"
-                    sh "pwd"
-                    sh "ls -la /usr/bin/"
                     sh "docker build -t pasqueque/pasqueque-repo:${BUILD_TAG} ."
                 }
                 //sh 'whoami'
