@@ -26,7 +26,7 @@ pipeline {
         
         stage('Build Docker OWN image') {
             steps {
-                sh "sudo docker build -t pasqueque/pasqueque-repo:${BUILD_TAG} ."
+                sh "docker build -t pasqueque/pasqueque-repo:${BUILD_TAG} ."
                 //sh 'whoami'
             }
             
@@ -40,7 +40,7 @@ pipeline {
                     """
                 }
                
-               sh "sudo docker push pasqueque/pasqueque-repo:${BUILD_TAG}"
+               sh "docker push pasqueque/pasqueque-repo:${BUILD_TAG}"
             }
             
         }
