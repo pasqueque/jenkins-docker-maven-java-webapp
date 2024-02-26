@@ -27,6 +27,9 @@ pipeline {
         stage('Build Docker OWN image') {
             steps {
                 dir ('.') {
+                    sh "whoami"
+                    sh "pwd"
+                    sh "ls -la /usr/bin/"
                     sh "docker build -t pasqueque/pasqueque-repo:${BUILD_TAG} ."
                 }
                 //sh 'whoami'
