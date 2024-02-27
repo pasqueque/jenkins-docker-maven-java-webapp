@@ -41,7 +41,7 @@ pipeline {
         stage('Build Docker OWN image') {
             steps {
                 dir ('.'){
-                    sh "cp -r prod_app_master@2/target/ ."
+                    sh "cp -r ../prod_app_master@2/target/ ."
                     sh "docker build -t pasqueque/pasqueque-repo:app${env.LATEST_TAG} ."
                 }
 
