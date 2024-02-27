@@ -17,9 +17,9 @@ pipeline {
             steps {
                 dir ('.'){
                     script {
-                        env.LATEST_TAG = sh(returnStdout: true, script: "git describe --tags").trim()
+                        LATEST_TAG = sh(returnStdout: true, script: "git describe --tags").trim()
                     }
-                    echo "Latest Tag is ${env.LATEST_TAG}"
+                    echo "Latest Tag is ${LATEST_TAG}"
                 }
             }
         }
@@ -39,7 +39,7 @@ pipeline {
         stage('Build Docker OWN image') {
             steps {
                 dir ('.') {
-                    sh 'docker build -t pasqueque/pasqueque-repo/app:${env.LATEST_TAG} .'
+                    sh 'docker build -t pasqueque/pasqueque-repo/app:${LATEST_TAG} .'
                 }
                 //sh 'whoami'
             }
@@ -54,7 +54,7 @@ pipeline {
                     """
                 }
                
-               sh 'docker push pasqueque/pasqueque-repo/app:${env.LATEST_TAG}'
+               sh 'docker push pasqueque/pasqueque-repo/app:${LATEST_TAG}'
             }
             
         }
@@ -63,7 +63,7 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'kube', keyFileVariable: 'SSH_KEY')]) {
                     sh """
-                    ssh -i $SSH_KEY cadm@158.160.50.177 kubectl --kubeconfig config create deployment myjavawebapp --image=pasqueque/pasqueque-repo/app:${env.LATEST_TAG}
+                    ssh -i $SSH_KEY cadm@158.160.50.177 kubectl --kubeconfig config create deployment myjavawebapp --image=pasqueque/pasqueque-repo/app:${LATEST_TAG}
                     """
                 }
             }
