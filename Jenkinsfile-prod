@@ -6,11 +6,11 @@ pipeline {
     }
 
     stages {
-        stage('Check out') {
+        /*stage('Check out') {
             steps {
                 git branch: 'master', changelog: false, poll: false, url: env.GITHUB_URL, fetchTags: true
             }
-        }
+        }*/
 
         stage("get tag") {
             steps {
