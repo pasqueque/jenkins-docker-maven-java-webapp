@@ -3,6 +3,7 @@ pipeline {
     
     environment {
         GITHUB_URL = "https://github.com/pasqueque/jenkins-docker-maven-java-webapp.git"
+        LATEST_TAG = ''
     }
 
     stages {
@@ -16,9 +17,9 @@ pipeline {
             steps {
                 dir ('.'){
                     script {
-                        latestTag = sh(returnStdout: true, script: "git describe --tags").trim()
+                        env.LATEST_TAG = sh(returnStdout: true, script: "git describe --tags").trim()
                     }
-                    echo "latestTag=$latestTag"
+                    echo "Latest Tag is ${env.LATEST_TAG}"
                 }
             }
         }
@@ -38,7 +39,7 @@ pipeline {
         stage('Build Docker OWN image') {
             steps {
                 dir ('.') {
-                    sh 'docker build -t pasqueque/pasqueque-repo/app:$latestTag .'
+                    sh 'docker build -t pasqueque/pasqueque-repo/app:${env.LATEST_TAG} .'
                 }
                 //sh 'whoami'
             }
@@ -53,7 +54,7 @@ pipeline {
                     """
                 }
                
-               sh 'docker push pasqueque/pasqueque-repo/app:$latestTag'
+               sh 'docker push pasqueque/pasqueque-repo/app:${env.LATEST_TAG}'
             }
             
         }
@@ -62,7 +63,7 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'kube', keyFileVariable: 'SSH_KEY')]) {
                     sh """
-                    ssh -i $SSH_KEY cadm@158.160.50.177 kubectl --kubeconfig config create deployment myjavawebapp --image=pasqueque/pasqueque-repo/app:$latestTag
+                    ssh -i $SSH_KEY cadm@158.160.50.177 kubectl --kubeconfig config create deployment myjavawebapp --image=pasqueque/pasqueque-repo/app:${env.LATEST_TAG}
                     """
                 }
             }
