@@ -14,10 +14,12 @@ pipeline {
 
         stage("get tag") {
             steps {
-                script {
-                    latestTag = sh(returnStdout: true, script: "git describe --tags").trim()
+                dir ('.'){
+                    script {
+                        latestTag = sh(returnStdout: true, script: "git describe --tags").trim()
+                    }
+                    echo "latestTag=$latestTag"
                 }
-                echo "latestTag=$latestTag"
             }
         }
 
