@@ -20,7 +20,7 @@ pipeline {
                         LATEST_TAG = sh(returnStdout: true, script: "git describe --abbrev=0 --tags").trim()
                     }
                     echo "Latest Tag is ${LATEST_TAG}"
-                    env.LATEST_TAG = ${LATEST_TAG}
+                    env.LATEST_TAG = LATEST_TAG
                     echo "test added tp env ${env.LATEST_TAG}"
                 }
             }
