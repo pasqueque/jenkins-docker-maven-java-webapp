@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         GITHUB_URL = "https://github.com/pasqueque/jenkins-docker-maven-java-webapp.git"
-        LATEST_TAG = ""
+        LATEST_TAG = "${(returnStdout: true, script: "git describe --abbrev=0 --tags").trim()}"
     }
 
     stages {
@@ -17,10 +17,10 @@ pipeline {
             steps {
                 dir ('.'){
                     script {
-                        LATEST_TAG = sh(returnStdout: true, script: "git describe --abbrev=0 --tags").trim()
+                        LATEST_TAG1 = sh(returnStdout: true, script: "git describe --abbrev=0 --tags").trim()
                     }
-                    echo "Latest Tag is ${LATEST_TAG}"
-                    env.LATEST_TAG = LATEST_TAG
+                    echo "Latest Tag is ${LATEST_TAG1}"
+                    //env.LATEST_TAG = LATEST_TAG
                     echo "test added tp env ${env.LATEST_TAG}"
                 }
             }
