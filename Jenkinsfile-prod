@@ -60,10 +60,11 @@ pipeline {
 
         stage("kubectl deploy") {
             steps {
-                echo " ============== start pushing image =================="
-                sh """
-                ssh  cadm@158.160.50.177 kubectl --kubeconfig config create deployment myjavawebapp  --image=pasqueque/pasqueque-repo/app:$latestTag
-                """
+                withCredentials([sshUserPrivateKey(credentialsId: 'kube', keyFileVariable: 'SSH_KEY')]) {
+                    sh """
+                    ssh -i $SSH_KEY cadm@158.160.50.177 kubectl --kubeconfig config create deployment myjavawebapp --image=pasqueque/pasqueque-repo/app:$latestTag
+                    """
+                }
             }
         }
 
