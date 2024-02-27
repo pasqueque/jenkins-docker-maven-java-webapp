@@ -40,9 +40,9 @@ pipeline {
         
         stage('Build Docker OWN image') {
             steps {
-                dir ('.') {
+                //dir ('.') {
                     sh "docker build -t pasqueque/pasqueque-repo:app${env.LATEST_TAG} ."
-                }
+                //}
                 //sh 'whoami'
             }
             
